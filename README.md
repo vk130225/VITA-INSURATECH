@@ -11,7 +11,7 @@ Every morning, thousands of Zepto and Blinkit delivery workers across Bengaluru,
 
 That is not a gap in the market. That is a failure of the entire insurance industry to acknowledge that over 15 million platform gig workers exist and operate without any income protection.
 
-The numbers are not abstract. A Q-Commerce delivery worker in a flood-prone urban zone loses an average of 20–30% of monthly income during disruption periods. Not inconvenient — the difference between paying rent and not.
+The numbers are not abstract. A Q-Commerce delivery worker in a flood-prone urban zone loses an average of 20–30% of monthly income during disruption periods..
 
 Existing insurance products fail this demographic structurally:
 
@@ -45,7 +45,7 @@ Food delivery workers cover 8–15 km. Zone boundaries blur. Fraud becomes harde
 
 | Property | Detail |
 |----------|--------|
-| Operating Radius | 2–4 km per delivery zone |
+| Operating Radius | 6-10 km per delivery zone (avg distance covered by a gig worker|
 | Income Model | Per-delivery, continuous activity dependent |
 | Earning Cycle | Weekly |
 | Disruption Impact | Immediate income stop within hours |
@@ -469,6 +469,4 @@ Department of Robotics and Artificial Intelligence
 -Eshaan Sai
 
 
----
 
-*Built with conviction. Submitted on time.*
