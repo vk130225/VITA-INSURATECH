@@ -1,0 +1,411 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);}
+.dash{background:#f0f2f7;min-height:100vh;padding:16px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;background:#fff;border:0.5px solid #dde1ec;border-radius:12px;padding:12px 16px;margin-bottom:14px;}
+.logo{font-size:17px;font-weight:500;color:#1a1d27;}
+.logo span{color:#0F6E56;}
+.logo-sub{font-size:11px;color:#9aa0b0;font-weight:400;margin-left:8px;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#0F6E56;display:inline-block;margin-right:5px;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.badge{font-size:11px;padding:4px 12px;border-radius:20px;border:0.5px solid #dde1ec;color:#6b7280;background:#f8f9fc;}
+.badge.green{border-color:#0F6E56;color:#0F6E56;background:#E1F5EE;}
+.badge.red{border-color:#E24B4A;color:#A32D2D;background:#FCEBEB;}
+.tabs{display:flex;gap:6px;margin-bottom:14px;}
+.tab{padding:8px 20px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #dde1ec;background:#fff;color:#6b7280;transition:all 0.15s;}
+.tab.active{background:#0F6E56;color:#fff;border-color:#0F6E56;}
+.page{display:none;}
+.page.active{display:block;}
+.section-label{font-size:10px;font-weight:500;color:#9aa0b0;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;margin-top:14px;}
+.metrics-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:4px;}
+.mcard{background:#fff;border:1px solid #dde1ec;border-radius:12px;padding:14px;box-shadow:0 1px 3px #0000000a;}
+.mcard-label{font-size:10px;color:#9aa0b0;margin-bottom:6px;}
+.mcard-val{font-size:22px;font-weight:500;color:#1a1d27;}
+.mcard-sub{font-size:10px;color:#c0c5d0;margin-top:3px;}
+.mcard.green .mcard-val{color:#0F6E56;}
+.mcard.red .mcard-val{color:#A32D2D;}
+.mcard.amber .mcard-val{color:#854F0B;}
+.mcard.blue .mcard-val{color:#185FA5;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.row3{display:grid;grid-template-columns:1.1fr 1fr 0.9fr;gap:10px;margin-bottom:10px;}
+.panel{background:#fff;border:1px solid #dde1ec;border-radius:12px;padding:16px;box-shadow:0 1px 3px #0000000a;}
+.panel-title{font-size:11px;font-weight:500;color:#9aa0b0;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:0.5px solid #edf0f7;}
+.zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.zc{height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all 0.15s;}
+.zc:hover{transform:scale(1.07);}
+.zc.red{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.zc.orange{background:#FEF3E2;color:#854F0B;border-color:#FAC775;}
+.zc.yellow{background:#FEFCE8;color:#854F0B;border-color:#EAD56A;}
+.zc.blue{background:#E6F1FB;color:#185FA5;border-color:#85B7EB;}
+.zc.green{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5;}
+.zc.pulse-red{animation:pulseRed 1.2s infinite;}
+@keyframes pulseRed{0%,100%{border-color:#F09595}50%{border-color:#E24B4A;box-shadow:0 0 8px #E24B4A22;}}
+.legend-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.leg{font-size:10px;padding:3px 9px;border-radius:10px;border:0.5px solid transparent;}
+.leg.red{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.leg.orange{background:#FEF3E2;color:#854F0B;border-color:#FAC775;}
+.leg.yellow{background:#FEFCE8;color:#854F0B;border-color:#EAD56A;}
+.leg.blue{background:#E6F1FB;color:#185FA5;border-color:#85B7EB;}
+.leg.green{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5;}
+.psteps{display:flex;flex-direction:column;gap:5px;}
+.pstep{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:#f8f9fc;border:1px solid #dde1ec;transition:all 0.25s;}
+.pstep.active{background:#E1F5EE;border-color:#5DCAA5;}
+.pstep.done{background:#EAF3DE;border-color:#97C459;}
+.pstep.fail{background:#FCEBEB;border-color:#F09595;}
+.pnum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;background:#edf0f7;color:#9aa0b0;border:1px solid #dde1ec;}
+.pnum.active{background:#0F6E56;color:#fff;border-color:#0F6E56;}
+.pnum.done{background:#3B6D11;color:#fff;border-color:#3B6D11;}
+.pnum.fail{background:#A32D2D;color:#fff;border-color:#A32D2D;}
+.plabel{font-size:11px;color:#374151;flex:1;}
+.pscore{font-size:10px;color:#9aa0b0;font-weight:500;}
+.score-big{font-size:34px;font-weight:500;color:#1a1d27;text-align:center;margin:10px 0 2px;}
+.score-sub{font-size:11px;color:#9aa0b0;text-align:center;}
+.dec{text-align:center;padding:9px;border-radius:9px;font-size:12px;font-weight:500;margin-top:10px;border:1px solid;}
+.dec.approved{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5;}
+.dec.review{background:#FEF3E2;color:#854F0B;border-color:#FAC775;}
+.dec.rejected{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.prog-bar{height:4px;background:#edf0f7;border-radius:2px;margin-top:10px;overflow:hidden;}
+.prog-fill{height:100%;background:#0F6E56;border-radius:2px;width:0;transition:width 1.5s ease;}
+.feed{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.feed-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:#f8f9fc;border:1px solid #dde1ec;}
+.avatar{width:30px;height:30px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#0F6E56;flex-shrink:0;}
+.fname{font-size:12px;font-weight:500;color:#1a1d27;}
+.fdetail{font-size:10px;color:#9aa0b0;}
+.fbadge{font-size:10px;padding:3px 9px;border-radius:10px;font-weight:500;border:0.5px solid transparent;}
+.fb-a{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5;}
+.fb-r{background:#FEF3E2;color:#854F0B;border-color:#FAC775;}
+.fb-x{background:#FCEBEB;color:#A32D2D;border-color:#F09595;}
+.arce-header{display:flex;justify-content:space-between;font-size:10px;color:#9aa0b0;padding:0 6px 6px;border-bottom:0.5px solid #edf0f7;margin-bottom:6px;}
+.arce-row{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:8px;margin-bottom:4px;border:1px solid #edf0f7;}
+.arce-zone{font-size:12px;font-weight:500;color:#374151;width:95px;}
+.abadge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.ab-red{background:#FCEBEB;color:#A32D2D;}
+.ab-orange{background:#FEF3E2;color:#854F0B;}
+.ab-green{background:#E1F5EE;color:#0F6E56;}
+.ab-low{background:#E1F5EE;color:#0F6E56;}
+.ab-med{background:#FEF3E2;color:#854F0B;}
+.ab-crit{background:#FCEBEB;color:#A32D2D;}
+.alert-box{display:none;padding:10px 14px;border-radius:10px;background:#FCEBEB;border:1px solid #F09595;margin-bottom:12px;}
+.alert-box.show{display:flex;align-items:center;gap:8px;}
+.alert-dot{width:8px;height:8px;border-radius:50%;background:#E24B4A;flex-shrink:0;animation:blink 1s infinite;}
+.alert-text{font-size:12px;color:#A32D2D;font-weight:500;}
+.trigger-btn{width:100%;padding:11px;border-radius:10px;border:1px solid #0F6E56;background:#E1F5EE;color:#0F6E56;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:10px;}
+.trigger-btn:hover{background:#0F6E56;color:#fff;}
+.trigger-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.pool-wrap{position:relative;height:90px;background:#f0f2f7;border-radius:10px;overflow:hidden;margin-bottom:12px;border:1px solid #dde1ec;}
+.pool-fill{position:absolute;bottom:0;left:0;right:0;background:#9FE1CB;transition:height 1.5s ease;height:62%;}
+.pool-stripe{position:absolute;bottom:0;left:0;right:0;height:4px;background:#0F6E56;}
+.pool-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.pool-amt{font-size:20px;font-weight:500;color:#085041;}
+.pool-lbl{font-size:10px;color:#0F6E56;margin-top:2px;}
+.pool-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.pstat{background:#f8f9fc;border:1px solid #dde1ec;border-radius:9px;padding:10px;}
+.pstat-lbl{font-size:10px;color:#9aa0b0;margin-bottom:3px;}
+.pstat-val{font-size:14px;font-weight:500;color:#1a1d27;}
+.ptiers{display:flex;flex-direction:column;gap:6px;}
+.ptier{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:#f8f9fc;border:1px solid #dde1ec;}
+.ptier-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ptier-name{font-size:11px;color:#6b7280;width:55px;}
+.ptier-bar{flex:1;height:5px;background:#edf0f7;border-radius:3px;overflow:hidden;}
+.ptier-fill{height:100%;border-radius:3px;}
+.ptier-price{font-size:12px;font-weight:500;color:#1a1d27;width:50px;text-align:right;}
+.ptier-pay{font-size:10px;color:#9aa0b0;width:65px;text-align:right;}
+.float-note{margin-top:10px;padding:8px 10px;border-radius:9px;background:#E1F5EE;border:1px solid #5DCAA5;font-size:10px;color:#085041;}
+.arce-note{margin-top:8px;padding:8px 10px;border-radius:9px;background:#FCEBEB;border:1px solid #F09595;font-size:10px;color:#791F1F;}
+.empty{font-size:11px;color:#c0c5d0;text-align:center;padding:20px;}
+.fin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:10px;}
+.fin-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+</style>
+
+<div class="dash">
+  <div class="topbar">
+    <div>
+      <span class="logo">VITA<span>-INSURATECH</span><span class="logo-sub">Admin Dashboard</span></span>
+    </div>
+    <div class="topbar-right">
+      <span style="font-size:11px;color:#9aa0b0;"><span class="live-dot"></span>Live — Bengaluru</span>
+      <span class="badge">Phase 1 Demo</span>
+      <span class="badge green">System Active</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchPage('ops',this)">Operations &amp; Claims</div>
+    <div class="tab" onclick="switchPage('fin',this)">Financials &amp; Pricing</div>
+  </div>
+
+  <div id="alert-box" class="alert-box">
+    <div class="alert-dot"></div>
+    <div class="alert-text" id="alert-text">Heavy rainfall detected — Koramangala elevated to RED. Dual-source confirmed: OpenWeather + IMD.</div>
+  </div>
+
+  <div id="page-ops" class="page active">
+    <div class="section-label">Live metrics</div>
+    <div class="metrics-row">
+      <div class="mcard green"><div class="mcard-label">Active workers</div><div class="mcard-val" id="m-workers">247</div><div class="mcard-sub">In coverage</div></div>
+      <div class="mcard blue"><div class="mcard-label">Claims today</div><div class="mcard-val" id="m-claims">0</div><div class="mcard-sub">Auto-processed</div></div>
+      <div class="mcard green"><div class="mcard-label">Payouts sent</div><div class="mcard-val" id="m-payouts">Rs. 0</div><div class="mcard-sub">Via UPI</div></div>
+      <div class="mcard red"><div class="mcard-label">Fraud blocked</div><div class="mcard-val" id="m-fraud">0</div><div class="mcard-sub">Auto-rejected</div></div>
+      <div class="mcard amber"><div class="mcard-label">In review</div><div class="mcard-val" id="m-review">0</div><div class="mcard-sub">Manual queue</div></div>
+      <div class="mcard"><div class="mcard-label">Approval rate</div><div class="mcard-val" id="m-rate">—</div><div class="mcard-sub">This session</div></div>
+    </div>
+
+    <div class="section-label">Zone intelligence + validation pipeline</div>
+    <div class="row3">
+      <div class="panel">
+        <div class="panel-title">Layer 1 — Live risk zone map (Bengaluru)</div>
+        <div class="zone-grid">
+          <div class="zc green">WF</div><div class="zc blue">EC</div><div class="zc yellow">MH</div><div class="zc green">HB</div><div class="zc blue">YL</div>
+          <div class="zc yellow">BT</div><div class="zc orange">HS</div><div class="zc red" id="km-zone">KM</div><div class="zc orange">IN</div><div class="zc yellow">JN</div>
+          <div class="zc green">RJ</div><div class="zc yellow">ML</div><div class="zc orange">SJ</div><div class="zc green">BN</div><div class="zc blue">JP</div>
+        </div>
+        <div class="legend-row">
+          <span class="leg red">Red — extreme</span>
+          <span class="leg orange">Orange — high</span>
+          <span class="leg yellow">Yellow — moderate</span>
+          <span class="leg blue">Blue — low</span>
+          <span class="leg green">Green — clear</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">6-Layer validation pipeline</div>
+        <div class="psteps" id="pipeline">
+          <div class="pstep" id="s1"><div class="pnum" id="i1">1</div><div class="plabel">Zone match</div><div class="pscore" id="sc1"></div></div>
+          <div class="pstep" id="s2"><div class="pnum" id="i2">2</div><div class="plabel">Sub-zone overlap</div><div class="pscore" id="sc2"></div></div>
+          <div class="pstep" id="s3"><div class="pnum" id="i3">3</div><div class="plabel">One-class SVM</div><div class="pscore" id="sc3"></div></div>
+          <div class="pstep" id="s4"><div class="pnum" id="i4">4</div><div class="plabel">DBSCAN rings</div><div class="pscore" id="sc4"></div></div>
+          <div class="pstep" id="s5"><div class="pnum" id="i5">5</div><div class="plabel">Sensor fusion</div><div class="pscore" id="sc5"></div></div>
+          <div class="pstep" id="s6"><div class="pnum" id="i6">6</div><div class="plabel">Work activity</div><div class="pscore" id="sc6"></div></div>
+        </div>
+        <div id="score-sec" style="display:none;margin-top:8px;">
+          <div class="score-big" id="final-score">—</div>
+          <div class="score-sub">XGBoost decision score</div>
+          <div class="dec" id="dec-box"></div>
+          <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">ARCE — zone risk correlation</div>
+        <div class="arce-header"><span style="width:95px;">Zone</span><span>Disrupt.</span><span>Claims</span><span>Risk</span></div>
+        <div class="arce-row" style="background:#EAF3DE;">
+          <span class="arce-zone">Koramangala</span><span class="abadge ab-red">Red</span><span class="abadge ab-red">Red</span><span class="abadge ab-low">Low</span>
+        </div>
+        <div class="arce-row" style="background:#FEF3E2;">
+          <span class="arce-zone">HSR Layout</span><span class="abadge ab-orange">Orange</span><span class="abadge ab-red">Red</span><span class="abadge ab-med">Medium</span>
+        </div>
+        <div class="arce-row" style="background:#FCEBEB;">
+          <span class="arce-zone">Whitefield</span><span class="abadge ab-green">Green</span><span class="abadge ab-red">Red</span><span class="abadge ab-crit">Critical</span>
+        </div>
+        <div class="arce-row" style="background:#EAF3DE;">
+          <span class="arce-zone">Indiranagar</span><span class="abadge ab-orange">Orange</span><span class="abadge ab-orange">Orange</span><span class="abadge ab-low">Low</span>
+        </div>
+        <div class="arce-note">Whitefield Critical — Green zone, Red claims. Proof threshold auto-raised.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Claims feed</div>
+    <div class="panel">
+      <div class="panel-title">Recent claims — auto-processed</div>
+      <div class="feed" id="claims-feed">
+        <div class="empty">No claims yet — trigger a disruption to run the full pipeline</div>
+      </div>
+    </div>
+
+    <button class="trigger-btn" id="trigger-btn" onclick="triggerDisruption()">Simulate disruption — Heavy rainfall in Koramangala (Layer 1 trigger)</button>
+  </div>
+
+  <div id="page-fin" class="page">
+    <div class="section-label">Financial health</div>
+    <div class="fin-metrics">
+      <div class="mcard green"><div class="mcard-label">Pool balance</div><div class="mcard-val" id="f-pool">Rs. 2,47,000</div><div class="mcard-sub">Claims reserve</div></div>
+      <div class="mcard green"><div class="mcard-label">Weekly premiums in</div><div class="mcard-val">Rs. 9,633</div><div class="mcard-sub">247 workers</div></div>
+      <div class="mcard green"><div class="mcard-label">Float returns (est.)</div><div class="mcard-val" style="color:#0F6E56;">Rs. 820</div><div class="mcard-sub">Liquid funds</div></div>
+      <div class="mcard"><div class="mcard-label">Reserve buffer</div><div class="mcard-val" style="color:#0F6E56;">3.2x</div><div class="mcard-sub">Weekly claims</div></div>
+    </div>
+
+    <div class="fin-row">
+      <div class="panel">
+        <div class="panel-title">Premium pool health</div>
+        <div class="pool-wrap">
+          <div class="pool-fill" id="pool-fill"></div>
+          <div class="pool-stripe"></div>
+          <div class="pool-text">
+            <div class="pool-amt" id="pool-amt">Rs. 2,47,000</div>
+            <div class="pool-lbl">Available balance</div>
+          </div>
+        </div>
+        <div class="pool-stats">
+          <div class="pstat"><div class="pstat-lbl">Premiums collected</div><div class="pstat-val">Rs. 9,633</div></div>
+          <div class="pstat"><div class="pstat-lbl">Float returns</div><div class="pstat-val" style="color:#0F6E56;">+ Rs. 820</div></div>
+          <div class="pstat"><div class="pstat-lbl">Payouts this week</div><div class="pstat-val" id="f-payouts">Rs. 0</div></div>
+          <div class="pstat"><div class="pstat-lbl">Net position</div><div class="pstat-val" id="f-net" style="color:#0F6E56;">+ Rs. 10,453</div></div>
+        </div>
+        <div class="float-note">Premiums parked in overnight liquid mutual funds. Returns reduce net cost for workers and sustain the reserve buffer.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Weekly premium tiers</div>
+        <div class="ptiers">
+          <div class="ptier">
+            <div class="ptier-dot" style="background:#0F6E56;"></div>
+            <div class="ptier-name">Green zone</div>
+            <div class="ptier-bar"><div class="ptier-fill" style="width:29%;background:#0F6E56;"></div></div>
+            <div class="ptier-price">Rs. 29</div>
+            <div class="ptier-pay">→ Rs. 800 max</div>
+          </div>
+          <div class="ptier">
+            <div class="ptier-dot" style="background:#BA7517;"></div>
+            <div class="ptier-name">Yellow zone</div>
+            <div class="ptier-bar"><div class="ptier-fill" style="width:39%;background:#BA7517;"></div></div>
+            <div class="ptier-price">Rs. 39</div>
+            <div class="ptier-pay">→ Rs. 1,200 max</div>
+          </div>
+          <div class="ptier">
+            <div class="ptier-dot" style="background:#854F0B;"></div>
+            <div class="ptier-name">Orange zone</div>
+            <div class="ptier-bar"><div class="ptier-fill" style="width:49%;background:#854F0B;"></div></div>
+            <div class="ptier-price">Rs. 49</div>
+            <div class="ptier-pay">→ Rs. 1,800 max</div>
+          </div>
+          <div class="ptier">
+            <div class="ptier-dot" style="background:#A32D2D;"></div>
+            <div class="ptier-name">Red zone</div>
+            <div class="ptier-bar"><div class="ptier-fill" style="width:59%;background:#A32D2D;"></div></div>
+            <div class="ptier-price">Rs. 59</div>
+            <div class="ptier-pay">→ Rs. 2,500 max</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:10px;border-radius:9px;background:#f8f9fc;border:1px solid #dde1ec;">
+          <div style="font-size:10px;color:#9aa0b0;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Dynamic pricing factors</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:#6b7280;">Zone disruption frequency</span><span style="color:#1a1d27;font-weight:500;">90-day rolling window</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:#6b7280;">Worker age</span><span style="color:#1a1d27;font-weight:500;">Actuarial adjustment</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:#6b7280;">Approximate earnings</span><span style="color:#1a1d27;font-weight:500;">From session data</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:#6b7280;">Claim history</span><span style="color:#1a1d27;font-weight:500;">Progressive discount</span></div>
+          </div>
+        </div>
+        <div style="margin-top:8px;padding:8px 10px;border-radius:9px;background:#E6F1FB;border:1px solid #85B7EB;font-size:10px;color:#185FA5;">
+          Zone recalculates every 7 days. Better zone = lower premium next week. Minimum 4-week subscription lock prevents adverse selection.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let claimCount=0,payoutTotal=0,fraudCount=0,reviewCount=0,approvedCount=0,running=false;
+const workers=[
+  {name:"Ravi K.",zone:"Koramangala",payout:1200,score:0.81,dec:"approved",scores:[0.95,0.94,0.88,0.85,0.87,0.83]},
+  {name:"Suresh M.",zone:"Koramangala",payout:800,score:0.77,dec:"approved",scores:[0.95,0.94,0.86,0.83,0.84,0.80]},
+  {name:"Priya D.",zone:"HSR Layout",payout:0,score:0.44,dec:"rejected",scores:[0.95,0.94,0.31,0.28,0,0]},
+  {name:"Anand R.",zone:"Koramangala",payout:0,score:0.64,dec:"review",scores:[0.95,0.94,0.82,0.79,0.71,0.68]},
+  {name:"Deepak S.",zone:"Koramangala",payout:1800,score:0.86,dec:"approved",scores:[0.95,0.94,0.91,0.88,0.90,0.87]},
+];
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function switchPage(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  el.classList.add('active');
+}
+async function triggerDisruption(){
+  if(running)return;
+  running=true;
+  const btn=document.getElementById('trigger-btn');
+  btn.disabled=true;btn.textContent='Disruption active — processing claims...';
+  document.getElementById('alert-box').classList.add('show');
+  document.getElementById('km-zone').classList.add('pulse-red');
+  document.getElementById('claims-feed').innerHTML='';
+  for(let w=0;w<workers.length;w++){await runWorker(workers[w]);await sleep(500);}
+  btn.textContent='Reset demo';btn.disabled=false;btn.onclick=resetDemo;running=false;
+}
+async function runWorker(w){
+  document.getElementById('score-sec').style.display='none';
+  document.getElementById('prog-fill').style.width='0';
+  for(let i=1;i<=6;i++){
+    document.getElementById('s'+i).className='pstep';
+    document.getElementById('i'+i).className='pnum';
+    document.getElementById('sc'+i).textContent='';
+  }
+  const stopAt=w.dec==='rejected'?4:6;
+  for(let i=0;i<stopAt;i++){
+    document.getElementById('s'+(i+1)).className='pstep active';
+    document.getElementById('i'+(i+1)).className='pnum active';
+    await sleep(280);
+    const ok=!(w.dec==='rejected'&&i>=2);
+    document.getElementById('s'+(i+1)).className='pstep '+(ok?'done':'fail');
+    document.getElementById('i'+(i+1)).className='pnum '+(ok?'done':'fail');
+    document.getElementById('sc'+(i+1)).textContent=w.scores[i]?w.scores[i].toFixed(2):'';
+    if(!ok)break;
+  }
+  await sleep(150);
+  document.getElementById('score-sec').style.display='block';
+  document.getElementById('final-score').textContent=w.score.toFixed(2);
+  const db=document.getElementById('dec-box');
+  if(w.dec==='approved'){
+    db.className='dec approved';db.textContent='Approved — UPI payout triggered';
+    claimCount++;approvedCount++;payoutTotal+=w.payout;
+    document.getElementById('m-payouts').textContent='Rs. '+payoutTotal.toLocaleString();
+    document.getElementById('f-payouts').textContent='Rs. '+payoutTotal.toLocaleString();
+    const net=10453-payoutTotal;
+    document.getElementById('f-net').textContent=(net>=0?'+ ':'- ')+'Rs. '+Math.abs(net).toLocaleString();
+    document.getElementById('f-net').style.color=net>=0?'#0F6E56':'#A32D2D';
+    const newPool=247000-payoutTotal;
+    document.getElementById('pool-amt').textContent='Rs. '+newPool.toLocaleString();
+    document.getElementById('f-pool').textContent='Rs. '+newPool.toLocaleString();
+    document.getElementById('pool-fill').style.height=Math.max(15,62-(payoutTotal/247000*55))+'%';
+    setTimeout(()=>{document.getElementById('prog-fill').style.width='100%';},100);
+  } else if(w.dec==='review'){
+    db.className='dec review';db.textContent='Score 0.55–0.72 — sent to manual review';
+    claimCount++;reviewCount++;document.getElementById('m-review').textContent=reviewCount;
+  } else {
+    db.className='dec rejected';db.textContent='Score below 0.55 — auto-rejected';
+    fraudCount++;document.getElementById('m-fraud').textContent=fraudCount;
+  }
+  document.getElementById('m-claims').textContent=claimCount;
+  document.getElementById('m-rate').textContent=claimCount>0?Math.round(approvedCount/claimCount*100)+'%':'—';
+  addFeedRow(w);
+}
+function addFeedRow(w){
+  const feed=document.getElementById('claims-feed');
+  const init=w.name.split(' ').map(n=>n[0]).join('');
+  const bc=w.dec==='approved'?'fb-a':w.dec==='review'?'fb-r':'fb-x';
+  const bl=w.dec==='approved'?'Approved':w.dec==='review'?'Review':'Rejected';
+  const pd=w.dec==='approved'?'Rs. '+w.payout.toLocaleString()+' sent via UPI':w.dec==='review'?'Pending manual review':'Blocked — fraud signal detected';
+  const d=document.createElement('div');
+  d.className='feed-item';
+  d.innerHTML=`<div class="avatar">${init}</div><div style="flex:1;"><div class="fname">${w.name}</div><div class="fdetail">${w.zone} — ${pd}</div></div><span class="fbadge ${bc}">${bl}</span>`;
+  feed.appendChild(d);
+}
+function resetDemo(){
+  claimCount=0;payoutTotal=0;fraudCount=0;reviewCount=0;approvedCount=0;
+  document.getElementById('m-claims').textContent='0';
+  document.getElementById('m-payouts').textContent='Rs. 0';
+  document.getElementById('m-fraud').textContent='0';
+  document.getElementById('m-review').textContent='0';
+  document.getElementById('m-rate').textContent='—';
+  document.getElementById('f-payouts').textContent='Rs. 0';
+  document.getElementById('f-net').textContent='+ Rs. 10,453';
+  document.getElementById('f-net').style.color='#0F6E56';
+  document.getElementById('pool-amt').textContent='Rs. 2,47,000';
+  document.getElementById('f-pool').textContent='Rs. 2,47,000';
+  document.getElementById('pool-fill').style.height='62%';
+  document.getElementById('claims-feed').innerHTML='<div class="empty">No claims yet — trigger a disruption to run the full pipeline</div>';
+  document.getElementById('alert-box').classList.remove('show');
+  document.getElementById('km-zone').classList.remove('pulse-red');
+  document.getElementById('score-sec').style.display='none';
+  document.getElementById('prog-fill').style.width='0';
+  for(let i=1;i<=6;i++){
+    document.getElementById('s'+i).className='pstep';
+    document.getElementById('i'+i).className='pnum';
+    document.getElementById('sc'+i).textContent='';
+  }
+  const btn=document.getElementById('trigger-btn');
+  btn.textContent='Simulate disruption — Heavy rainfall in Koramangala (Layer 1 trigger)';
+  btn.onclick=triggerDisruption;btn.disabled=false;running=false;
+}
+</script>
