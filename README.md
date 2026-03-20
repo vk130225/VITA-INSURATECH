@@ -410,31 +410,51 @@ This approach — training on synthetic data before launch — is how real insur
 ---
 ---
 
-## Adversarial Defense & Anti-Spoofing Strategy  
-*(Added 20 March 2026 in response to Market Crash Alert)*
+## Adversarial Defense & Anti-Spoofing Strategy
 
-**1. The Differentiation**  
-VITA never relies on GPS alone. A genuine stranded worker in Koramangala will have **three independent non-GPS signals** in agreement:  
-- Cellular triangulation (Layer 2)  
-- Accelerometer + gyroscope movement signature (Layer 5)  
-- 45+ minutes of pre-disruption active delivery rhythm (Layer 6)  
+VITA's anti-spoofing architecture is not a patch — it is structural. Cellular triangulation, accelerometer fusion, and pre-disruption activity validation were built into the fraud detection pipeline from the beginning. This section documents how those layers respond to coordinated GPS spoofing specifically.
 
-A bad actor sitting at home on their sofa cannot fake consistent two-wheeler vibration patterns + real cell-tower overlap at the same time.
+---
 
-**2. The Data (Beyond GPS)**  
-- GPS vs Cellular drift > 150m → instant SVM flag  
-- DBSCAN detects Telegram-style fraud rings (unnaturally timed, symmetric clusters)  
-- One-Class SVM + ARCE zone mismatch (Green zone suddenly flooding with Red claims = Critical)  
-- Claim timing + session continuity analysis
+### 1. Differentiating a genuine worker from a bad actor
 
-**3. UX Balance for Honest Workers**  
-- Score 0.55–0.72 → “Fast Review” mode (not rejection)  
-- Worker sees one-tap button: “I was delivering — show my last 3 orders”  
-- Honest claims cleared in <90 seconds with message “Network hiccup detected — coverage maintained ✅”  
-- First-time flags never result in permanent block.
+VITA does not rely on GPS as a trust signal.
 
-This architecture makes coordinated GPS spoofing economically unviable while protecting genuine workers during real rain or network drops.
+When a claim comes in, the system cross-checks three independent signals that cannot be simultaneously faked by a GPS spoofing application:
 
+- **Cellular triangulation (Layer 2)** — Cell tower positioning runs on the phone's baseband chip, entirely separate from the GPS stack. A spoofing app operating at the OS level cannot manipulate baseband output. If GPS reports one location and cellular triangulation reports another more than 150 metres away, the discrepancy is flagged immediately by the One-Class SVM.
+- **Accelerometer + gyroscope (Layer 5)** — A two-wheeler in active delivery produces a specific vibration and stop-start motion signature. A stationary phone produces a flat IMU reading. No GPS spoofing application generates synthetic inertial sensor data.
+- **Pre-disruption activity (Layer 6)** — The system requires a minimum of 45 minutes of verified delivery activity before the disruption trigger fires. Presence in the zone at claim time is not sufficient. Active work in the zone before the disruption is required.
+
+All three signals are required to be consistent for a claim to proceed without additional scrutiny.
+
+---
+
+### 2. Data points analysed beyond GPS
+
+| Signal | What it detects |
+|--------|----------------|
+| GPS vs. cellular location drift > 150m | Immediate One-Class SVM flag — the two signals should not disagree at this margin under normal conditions |
+| DBSCAN cluster geometry | Genuine disruption claims distribute naturally across a zone over time. Coordinated fraud rings produce unnaturally uniform spacing and near-simultaneous submission timestamps. DBSCAN identifies the structural difference. |
+| ARCE zone mismatch | A Green-classified zone generating Red-level claim volume triggers a Critical flag in ARCE and initiates automated investigation |
+| Claim submission timing | Claims submitted anomalously fast indicate pre-staged behaviour. Claims submitted with significant delay indicate retroactive filing. Both patterns are weighted negatively in the XGBoost decision model. |
+| Route continuity | A worker whose device appears in a disruption zone with no movement history leading there is scored as an outlier. Legitimate workers have a traceable route into the zone. |
+
+When DBSCAN identifies a suspicious cluster, ARCE automatically raises the proof threshold for all claims in that zone going forward — not only for flagged individuals. Zones with a history of coordinated fraud become progressively harder to exploit over time.
+
+---
+
+### 3. Handling flagged claims without penalising honest workers
+
+GPS signal degradation is a documented consequence of heavy rainfall and dense urban construction. The system is built to account for this rather than treat it as a fraud indicator by default.
+
+- **Score 0.55–0.72 → Fast Review mode.** The claim is held, not rejected.
+- The worker receives a single prompt: *"Confirm your last 3 delivery stops."* No form submission, no manual upload, no support queue.
+- Valid claims resolve in under 90 seconds. The worker is notified: *"Signal drop detected — coverage maintained ✅"*
+- First-time anomaly flags do not result in permanent blocks. Worker trust scores accumulate over time, and a clean claim history lowers the verification threshold on future claims.
+- Workers operating in zones with documented network dead spots are assigned a pre-configured leniency buffer. Signal degradation in those areas is an expected condition, not a suspicious one.
+
+The architecture is designed so that executing a coordinated GPS spoof — faking cellular positioning, inertial sensor data, and 45 minutes of delivery activity simultaneously — costs more effort than any realistic payout justifies.
 ---
  
 ## Deliverable Roadmap
