@@ -45,7 +45,7 @@ Food delivery workers cover 8–15 km. Zone boundaries blur. Fraud becomes harde
 
 | Property | Detail |
 |----------|--------|
-| Operating Radius | 6-10 km per delivery zone (avg distance covered by a gig worker|
+| Operating Radius | 2-4 km per delivery zone (avg distance covered by a gig worker)|
 | Income Model | Per-delivery, continuous activity dependent |
 | Earning Cycle | Weekly |
 | Disruption Impact | Immediate income stop within hours |
