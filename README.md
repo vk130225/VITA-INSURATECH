@@ -463,9 +463,11 @@ VITA-INSURATECH
 Amrita Vishwa Vidyapeetham, Bengaluru
 Department of Robotics and Artificial Intelligence
 
-*[Team member names]*
-*[GitHub Repository Link]*
-*[2-Minute Video Link]*
+*[The tech Incubaters]*
+-KS Viswa
+-J Anwita Reddy
+-Eshaan Sai
+
 
 ---
 
