@@ -410,7 +410,7 @@ This approach — training on synthetic data before launch — is how real insur
 ---
 ---
 
-## 🚨 Adversarial Defense & Anti-Spoofing Strategy  
+## Adversarial Defense & Anti-Spoofing Strategy  
 *(Added 20 March 2026 in response to Market Crash Alert)*
 
 **1. The Differentiation**  
