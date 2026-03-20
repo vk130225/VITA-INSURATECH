@@ -408,7 +408,35 @@ New workers start on this default profile. Over their first four weeks, as real 
 This approach — training on synthetic data before launch — is how real insurance ML systems handle the cold start problem. It is the only way to have fraud detection working reliably before you have enough real users to learn from.
 
 ---
+---
 
+## 🚨 Adversarial Defense & Anti-Spoofing Strategy  
+*(Added 20 March 2026 in response to Market Crash Alert)*
+
+**1. The Differentiation**  
+VITA never relies on GPS alone. A genuine stranded worker in Koramangala will have **three independent non-GPS signals** in agreement:  
+- Cellular triangulation (Layer 2)  
+- Accelerometer + gyroscope movement signature (Layer 5)  
+- 45+ minutes of pre-disruption active delivery rhythm (Layer 6)  
+
+A bad actor sitting at home on their sofa cannot fake consistent two-wheeler vibration patterns + real cell-tower overlap at the same time.
+
+**2. The Data (Beyond GPS)**  
+- GPS vs Cellular drift > 150m → instant SVM flag  
+- DBSCAN detects Telegram-style fraud rings (unnaturally timed, symmetric clusters)  
+- One-Class SVM + ARCE zone mismatch (Green zone suddenly flooding with Red claims = Critical)  
+- Claim timing + session continuity analysis
+
+**3. UX Balance for Honest Workers**  
+- Score 0.55–0.72 → “Fast Review” mode (not rejection)  
+- Worker sees one-tap button: “I was delivering — show my last 3 orders”  
+- Honest claims cleared in <90 seconds with message “Network hiccup detected — coverage maintained ✅”  
+- First-time flags never result in permanent block.
+
+This architecture makes coordinated GPS spoofing economically unviable while protecting genuine workers during real rain or network drops.
+
+---
+ 
 ## Deliverable Roadmap
 
 ### Phase 1 — Ideation and Foundation (Current)
